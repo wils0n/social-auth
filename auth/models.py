@@ -23,4 +23,4 @@ class Perfil(models.Model):
         if foto:
             return foto
         else:
-            return settings.STATIC_URL+"img/avatar_default.png"
+            return "users/pictures/avatar_default.png"

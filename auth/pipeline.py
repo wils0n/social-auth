@@ -18,35 +18,31 @@ from auth.models import Photo, Perfil
 
 def get_profile_avatar(strategy, uid, response, user=None, *args, **kwargs):
 
-    print response
-    print kwargs
-    print user
-
     url = None
 
-    #if kwargs['is_new']:
-    if kwargs['backend'].__class__ == FacebookOAuth2:
-        url = "http://graph.facebook.com/%s/picture?type=large" % response['id']
+    if kwargs['is_new']:
+        if kwargs['backend'].__class__ == FacebookOAuth2:
+            url = "http://graph.facebook.com/%s/picture?type=large" % response['id']
 
-    if url:
-        try:
-            avatar = urlopen(url)
-            photo = Photo(user=user, is_avatar=True)
-            photo.picture.save(slugify(user.username + " ninja") + ".png", ContentFile(avatar.read()))
-            photo.save()
+        if url:
+            try:
+                avatar = urlopen(url)
+                photo = Photo(user=user, is_avatar=True)
+                photo.picture.save(slugify(user.username + " ninja") + ".png", ContentFile(avatar.read()))
+                photo.save()
 
-        except:
+            except:
+                avatar = open(settings.STATIC_URL+"img/avatar_default.png", "r+")
+                photo = Photo(user=user, is_avatar=True)
+                photo.picture.save(slugify(user.username + " ninja") + ".png", ContentFile(avatar.read()))
+                photo.save()
+        else:
             avatar = open(settings.STATIC_URL+"img/avatar_default.png", "r+")
             photo = Photo(user=user, is_avatar=True)
             photo.picture.save(slugify(user.username + " ninja") + ".png", ContentFile(avatar.read()))
             photo.save()
-    else:
-        avatar = open(settings.STATIC_URL+"img/avatar_default.png", "r+")
-        photo = Photo(user=user, is_avatar=True)
-        photo.picture.save(slugify(user.username + " ninja") + ".png", ContentFile(avatar.read()))
-        photo.save()
 
-    try:
-        p,n = Perfil.objects.get_or_create(user=user)
-    except:
-        pass
+        try:
+            p,n = Perfil.objects.get_or_create(user=user)
+        except:
+            pass
