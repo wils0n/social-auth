@@ -1,0 +1,8 @@
+db.sqlite3/*
+*.sqlite3
+*.pyc
+.idea/*
+media/*
+python_social_auth/settings.py
+
+
